@@ -7,8 +7,8 @@ const knexConfig = {
   useNullAsDefault: true,
   connection: {
     filename: "./data/lambda.sqlite3"
-  }
-  // debug: true
+  },
+  debug: true
 };
 
 const db = knex(knexConfig);
@@ -18,6 +18,19 @@ server.use(express.json());
 server.use(helmet());
 
 // endpoints here
+
+server.post("/api/zoos", async (req, res) => {
+  try {
+    await db("zoos").insert(req.body);
+    res.status(201).json({
+      message: "Some useful message"
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Some useful error message"
+    });
+  }
+});
 
 server.get("/api/zoos", async (req, res) => {
   try {
