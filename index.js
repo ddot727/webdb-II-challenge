@@ -1,12 +1,34 @@
 const express = require("express");
 const helmet = require("helmet");
+const knex = require("knex");
 
+const knexConfig = {
+  client: "sqlite3",
+  useNullAsDefault: true,
+  connection: {
+    filename: "./data/lambda.sqlite3"
+  }
+  // debug: true
+};
+
+const db = knex(knexConfig);
 const server = express();
 
 server.use(express.json());
 server.use(helmet());
 
 // endpoints here
+
+server.get("/api/zoos", async (req, res) => {
+  try {
+    const zoos = await db("zoos");
+    res.status(200).json(zoos);
+  } catch (error) {
+    res.status(500).json({
+      message: "Some useful error message"
+    });
+  }
+});
 
 const port = 3300;
 server.listen(port, function() {
