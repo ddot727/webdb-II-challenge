@@ -96,6 +96,85 @@ server.delete("/api/zoos/:id", async (req, res) => {
   }
 });
 
+/////////////////////////////////Stretch///////////////////////////////////
+
+server.post("/api/bears", async (req, res) => {
+  try {
+    await db("bears").insert(req.body);
+    res.status(201).json({
+      message: "Some useful message"
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Some useful error message"
+    });
+  }
+});
+
+server.get("/api/bears", async (req, res) => {
+  try {
+    const bears = await db("bears");
+    res.status(200).json(bears);
+  } catch (error) {
+    res.status(500).json({
+      message: "Some useful error message"
+    });
+  }
+});
+
+server.get("/api/bears/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const bears = await db("bears").where({ id });
+    res.status(200).json(bears);
+  } catch (error) {
+    res.status(500).json({
+      message: "Some useful error message"
+    });
+  }
+});
+
+server.put("/api/bears/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const count = await db("bears")
+      .where({ id })
+      .update(req.body);
+    if (count > 0) {
+      res.status(200).json(count);
+    } else {
+      res.status(404).json({
+        message: "Some useful 404 message"
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Some useful Error message"
+    });
+  }
+});
+
+server.delete("/api/bears/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const count = await db("bears")
+      .where({ id })
+      .del();
+
+    if (count > 0) {
+      res.status(200).end;
+    } else {
+      res.status(404).json({
+        message: "Some useful 404 message"
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Some useful Error message"
+    });
+  }
+});
+
 const port = 3300;
 server.listen(port, function() {
   console.log(`\n=== Web API Listening on http://localhost:${port} ===\n`);
